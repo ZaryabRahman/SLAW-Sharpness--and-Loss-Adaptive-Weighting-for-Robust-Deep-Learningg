@@ -5,23 +5,50 @@ import torchvision
 from tqdm import tqdm
 import os
 import argparse
+
 from slaw import SLAW
 from dataset import get_dataloaders
 from utils import set_seed, History
 
-
+# constants
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 N_EPOCHS = 50
 LEARNING_RATE = 1e-3
 WEIGHT_DECAY = 5e-4
 NUM_CLASSES = 10
 
-def get_model():
+def get_model() -> nn.Module:
+    """
+    initializes a ResNet-18 model pretrained on ImageNet, with its final
+    layer adapted for CIFAR-10 classification (10 classes).
+
+    :return: The initialized model, moved to the appropriate device (GPU or CPU).
+    :rtype: nn.Module
+    """
     model = torchvision.models.resnet18(weights='IMAGENET1K_V1')
     model.fc = nn.Linear(model.fc.in_features, NUM_CLASSES)
     return model.to(DEVICE)
 
-def train_one_epoch(model, dataloader, criterion, optimizer, run_name, history):
+def train_one_epoch(model: nn.Module, dataloader: torch.utils.data.DataLoader, 
+                    criterion, optimizer: optim.Optimizer, run_name: str, 
+                    history: History):
+    """
+    performs one full epoch of training.
+
+    :param model: The neural network model to train.
+    :type model: nn.Module
+    :param dataloader: The DataLoader for the training data.
+    :type dataloader: torch.utils.data.DataLoader
+    :param criterion: The loss function (e.g., nn.CrossEntropyLoss or SLAW).
+    :param optimizer: The optimization algorithm.
+    :type optimizer: optim.Optimizer
+    :param run_name: The name of the current experiment run for logging.
+    :type run_name: str
+    :param history: The History object to log metrics.
+    :type history: History
+    :return: A tuple of (average training loss, training accuracy).
+    :rtype: tuple[float, float]
+    """
     model.train()
     total_loss, total_correct, total_samples = 0, 0, 0
     progress_bar = tqdm(dataloader, desc="Training", leave=False)
@@ -48,7 +75,17 @@ def train_one_epoch(model, dataloader, criterion, optimizer, run_name, history):
         progress_bar.set_postfix(loss=total_loss/total_samples, acc=100.*total_correct/total_samples)
     return total_loss / total_samples, 100. * total_correct / total_samples
 
-def evaluate(model, dataloader):
+def evaluate(model: nn.Module, dataloader: torch.utils.data.DataLoader) -> tuple[float, float]:
+    """
+    evaluates the model on a given dataset.
+
+    :param model: The model to evaluate.
+    :type model: nn.Module
+    :param dataloader: The DataLoader for the validation or test data.
+    :type dataloader: torch.utils.data.DataLoader
+    :return: A tuple of (average loss, accuracy).
+    :rtype: tuple[float, float]
+    """
     model.eval()
     total_loss, total_correct, total_samples = 0, 0, 0
     with torch.no_grad():
@@ -62,7 +99,17 @@ def evaluate(model, dataloader):
             total_samples += inputs.size(0)
     return total_loss / total_samples, 100. * total_correct / total_samples
 
-def main(args):
+def main(args: argparse.Namespace):
+    """
+    the main driver for running experiments.
+
+    this function parses command-line arguments to configure and run a specific
+    training experiment. It handles data loading, model and criterion setup,
+    the main training loop, and saving results.
+
+    :param args: An object containing the parsed command-line arguments.
+    :type args: argparse.Namespace
+    """
     set_seed(42)
     os.makedirs('results', exist_ok=True)
     os.makedirs('plots', exist_ok=True)
@@ -71,10 +118,8 @@ def main(args):
     # data loading 
     trainloader, testloader = get_dataloaders(noise_level=args.noise, batch_size=128)
 
-    # expirement configurarion 
+    # exp configrations
     run_name = args.run
-    
-    # common config
     slaw_config_clean = {'gamma': 0.7}
     slaw_config_noisy = {'gamma': 0.9}
     
@@ -124,7 +169,7 @@ def main(args):
         log = {'epoch': epoch, 'train_loss': train_loss, 'train_acc': train_acc, 'val_loss': val_loss, 'val_acc': val_acc}
         history.add_epoch_log(full_run_name, log)
         
-        print(f"epoch {epoch+1}/{N_EPOCHS} | train Loss: {train_loss:.4f}, train Acc: {train_acc:.2f}% | val Loss: {val_loss:.4f}, val Acc: {val_acc:.2f}%")
+        print(f"Epoch {epoch+1}/{N_EPOCHS} | Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}% | Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.2f}%")
         
         if val_acc > best_val_acc:
             best_val_acc = val_acc
