@@ -50,6 +50,8 @@ Our empirical evaluation demonstrates SLAW's effectiveness across various levels
 **Objective:** To establish that SLAW does not harm performance on clean, ideal datasets.
 
 **Achievement:** SLAW acts as an effective regularizer. It achieves a final validation accuracy (87.85%) nearly identical to the baseline (87.86%) while **significantly improving model calibration**. The Expected Calibration Error (ECE) was reduced by **14.6%** (from 7.55% to 6.45%), indicating that SLAW produces more reliable and trustworthy probability estimates without sacrificing raw performance.
+![SLAW vs Baseline Training curves on clean CIFAR-10](/plots/acc-50.png)
+![Internal dynamics of the SLAW algorithm during training. on clean CIFAR-10](/plots/param-50.png)
 
 ### **Experiment 2: Robustness to Moderate (20%) Label Noise**
 
