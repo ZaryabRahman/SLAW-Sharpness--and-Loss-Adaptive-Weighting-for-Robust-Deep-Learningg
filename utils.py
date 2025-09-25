@@ -3,32 +3,97 @@ import numpy as np
 import pickle
 import pandas as pd
 import torch.nn.functional as F
+from torch.utils.data import DataLoader
 
-def set_seed(seed=42):
-    """For reproducibility."""
+def set_seed(seed: int = 42):
+    """
+    sets the random seed for all relevant libraries to ensure reproducibility.
+
+    :param seed: The integer value to use as the seed.
+    :type seed: int
+    """
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     np.random.seed(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
+    print(f"Random seed set to {seed}")
 
 class History:
-    """A helper class to store and manage training history."""
-    def __init__(self): self.history = {}
-    def new_run(self, name): self.history[name] = {'epochs': [], 'steps': []}
-    def add_epoch_log(self, name, log): self.history[name]['epochs'].append(log)
-    def add_step_log(self, name, log): self.history[name]['steps'].append(log)
-    def get_epoch_df(self, name): return pd.DataFrame(self.history[name]['epochs'])
-    def get_step_df(self, name): return pd.DataFrame(self.history[name]['steps'])
-    def save(self, fp):
-        with open(fp, 'wb') as f: pickle.dump(self.history, f)
-    def load(self, fp):
-        with open(fp, 'rb') as f: self.history = pickle.load(f)
+    """
+    a utility class to log, manage, and save training history.
+
+    this class provides a simple interface to track metrics on both a per-epoch
+    and per-step basis, and can save/load its state to/from a pickle file.
+    """
+    def __init__(self):
+        self.history = {}
+
+    def new_run(self, name: str):
+        """starts a new logging 
+        session for an 
+        experiment run.
+        """
+        self.history[name] = {'epochs': [], 'steps': []}
+
+    def add_epoch_log(self, name: str, log: dict):
+        """adds a log entry
+        for a completed
+        epoch."""
+        self.history[name]['epochs'].append(log)
+
+    def add_step_log(self, name: str, log: dict):
+        """adds a log entry \
+        for a completed training 
+        step (batch).
+        """
+        self.history[name]['steps'].append(log)
+
+    def get_epoch_df(self, name: str) -> pd.DataFrame:
+        """returns the epoch 
+        history for a run as a 
+        pandas DataFrame.
+        """
+        return pd.DataFrame(self.history[name]['epochs'])
+
+    def get_step_df(self, name: str) -> pd.DataFrame:
+        """returns the step history 
+        for a run as a pandas DataFrame.
+        """
+        return pd.DataFrame(self.history[name]['steps'])
+
+    def save(self, fp: str):
+        """Ssaves the entire history
+        dictionary to a file.
+        """
+        with open(fp, 'wb') as f:
+            pickle.dump(self.history, f)
+
+    def load(self, fp: str):
+        """Loads a history dictionary from a file."""
+        with open(fp, 'rb') as f:
+            self.history = pickle.load(f)
 
 @torch.no_grad()
-def calculate_ece(model, dataloader, n_bins=15, device='cuda'):
-    """Calculates the Expected Calibration Error of a model."""
+def calculate_ece(model: torch.nn.Module, dataloader: DataLoader, n_bins: int = 15, device: str = 'cuda') -> float:
+    """
+    calculates the Expected Calibration Error (ECE) of a model.
+
+    ECE is a metric that measures the discrepancy between a model's prediction
+    confidence and its actual accuracy. A lower ECE indicates a better-calibrated model.
+
+    :param model: The trained model to evaluate.
+    :type model: torch.nn.Module
+    :param dataloader: DataLoader for the dataset to evaluate on (e.g., test set).
+    :type dataloader: DataLoader
+    :param n_bins: The number of confidence bins to use for the calculation.
+    :type n_bins: int
+    :param device: The device to run the evaluation on ('cuda' or 'cpu').
+    :type device: str
+    :return: The computed ECE score.
+    :rtype: float
+    """
     model.eval()
     all_confidences, all_correct = [], []
     for inputs, targets in dataloader:
@@ -57,8 +122,22 @@ def calculate_ece(model, dataloader, n_bins=15, device='cuda'):
     return ece.item()
 
 @torch.no_grad()
-def get_calibration_data(model, dataloader, n_bins=15, device='cuda'):
-    """Gathers data needed for plotting a reliability diagram."""
+def get_calibration_data(model: torch.nn.Module, dataloader: DataLoader, n_bins: int = 15, device: str = 'cuda') -> tuple:
+    """
+    gathers the necessary statistics to plot a reliability diagram.
+
+    :param model: The trained model to evaluate.
+    :type model: torch.nn.Module
+    :param dataloader: DataLoader for the dataset.
+    :type dataloader: DataLoader
+    :param n_bins: The number of confidence bins.
+    :type n_bins: int
+    :param device: The device for evaluation.
+    :type device: str
+    :return: A tuple containing lists of (accuracies per bin, average confidences
+             per bin, and proportion of samples per bin).
+    :rtype: tuple[list, list, list]
+    """
     model.eval()
     all_confidences, all_correct = [], []
     for inputs, targets in dataloader:
