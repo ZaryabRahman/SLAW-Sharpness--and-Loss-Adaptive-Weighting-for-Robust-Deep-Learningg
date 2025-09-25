@@ -131,6 +131,6 @@ If you find this work useful in your research, please cite our work (the detials
   author={Rahman, Zaryab},
   booktitle={Proceedings of the International Conference on Machine Learning (ICML)},
   year={2025},
-  note={Code available at: github.com/ZaryabRahman/SLAW-Robust-Deep-Learning}
+  note={Code available at: https://github.com/ZaryabRahman/SLAW-Sharpness--and-Loss-Adaptive-Weighting-for-Robust-Deep-Learningg}
 }
 ```
