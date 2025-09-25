@@ -2,7 +2,7 @@
 
 This repository contains the official PyTorch implementation and experimental results for the paper **"SLAW: Sharpness- and Loss-Adaptive Weighting for Robust Deep Learning"**. All figures from the paper are included in the `/plots` directory of this repository for reference.
 
-![SLAW vs Baseline on 20% Noise](acc-noisy-50.png)
+![SLAW vs Baseline on 20% Noise](/plots/acc-noisy-50.png)
 *A key result from the paper (Figure 3): When trained on data with 20% label noise, a standard ResNet-18 suffers from catastrophic overfitting. In contrast, our proposed method, SLAW, maintains stable generalization and resists memorizing incorrect labels.*
 
 ---
