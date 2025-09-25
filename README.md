@@ -59,6 +59,7 @@ Our empirical evaluation demonstrates SLAW's effectiveness across various levels
 
 **Achievement:** This experiment showcases SLAW's primary strength. While the baseline model suffers **catastrophic overfitting** after 25 epochs (losing ~3% accuracy), SLAW maintains **remarkable stability and robust generalization** throughout training. Analysis of SLAW's internal dynamics (Figure 4) provides a "smoking gun": the average sample weight assigned by the LAW component steadily decreases, providing direct evidence of its **successful, on-the-fly identification and suppression of noisy samples**.
 
+
 ### **Experiment 3: Probing the Limits with Extreme (40%) Noise**
 
 **Objective:** To evaluate SLAW's behavior under severe data corruption.
