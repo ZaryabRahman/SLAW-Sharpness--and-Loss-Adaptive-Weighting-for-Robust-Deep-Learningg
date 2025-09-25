@@ -129,7 +129,7 @@ If you find this work useful in your research, please cite our work (the detials
 @inproceedings{rahman2025slaw,
   title={{SLAW}: {S}harpness- and {L}oss-{A}daptive {W}eighting for {R}obust {D}eep {L}earning},
   author={Rahman, Zaryab},
-  booktitle={Proceedings of the International Conference on Machine Learning (ICML)},
+  booktitle={--},
   year={2025},
   note={Code available at: https://github.com/ZaryabRahman/SLAW-Sharpness--and-Loss-Adaptive-Weighting-for-Robust-Deep-Learningg}
 }
