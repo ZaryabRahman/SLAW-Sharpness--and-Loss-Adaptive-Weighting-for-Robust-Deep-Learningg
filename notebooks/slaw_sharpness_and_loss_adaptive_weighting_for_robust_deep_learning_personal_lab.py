@@ -8,6 +8,10 @@ Original file is located at
 
 # **Expirement 01**
 
+# Author: Zaryab rahman 
+# Data: 26/9/2025
+
+
 ## SETUP AND IMPORTS
 """
 
