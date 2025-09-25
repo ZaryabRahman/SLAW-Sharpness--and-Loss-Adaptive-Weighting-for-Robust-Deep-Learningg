@@ -98,21 +98,21 @@ python main.py --run slaw --noise 0.4```
 
 ---
 
-## Generating Figures
+## generating Figures
 
 After the training experiments are complete, you can generate all figures from the paper using `plot.py`. The script reads the saved logs from the `/results` directory and outputs high-resolution images to `/plots`.
 
 ```bash
-# Generate plots for the clean data experiment (Figures 1, 2)
+# generate plots for the clean data experiment (Figures 1, 2)
 python plot.py --exp clean
 
-# Generate plots for the 20% noise experiment (Figures 3, 4)
+# generate plots for the 20% noise experiment (Figures 3, 4)
 python plot.py --exp noise20
 
-# Generate plots for the 40% noise experiment (Figures 5, 6, 7)
+# generate plots for the 40% noise experiment (Figures 5, 6, 7)
 python plot.py --exp noise40
 
-# Generate plots for the ablation study (Figures 9, 10)
+# generate plots for the ablation study (Figures 9, 10)
 python plot.py --exp ablation20
 ```
 
@@ -120,7 +120,7 @@ python plot.py --exp ablation20
 
 ## How to Cite
 
-If you find this work useful in your research, please cite our work ( the detials will be updated upon accpetance:
+If you find this work useful in your research, please cite our work (the detials will be updated upon accpetance):
 
 ```bibtex
 @inproceedings{rahman2025slaw,
