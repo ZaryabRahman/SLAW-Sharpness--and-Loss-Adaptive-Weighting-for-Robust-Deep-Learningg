@@ -1,4 +1,4 @@
-# SLAW: Sharpness- and Loss-Adaptive Weighting for Robust Deep Learning
+# SLAW: Sharpness- and Loss-Adaptive Weighting for Robust Deep Learning (Published)
 
 This repository contains the official PyTorch implementation and experimental results for the paper **"SLAW: Sharpness- and Loss-Adaptive Weighting for Robust Deep Learning"**. All figures from the paper are included in the `/plots` directory of this repository for reference.
 
@@ -123,14 +123,17 @@ python plot.py --exp ablation20
 
 ## How to Cite
 
-If you find this work useful in your research, please cite our work (the detials will be updated upon accpetance):
+If you find this work useful in your research, please cite our work:
 
 ```bibtex
-@inproceedings{rahman2025slaw,
-  title={{SLAW}: {S}harpness- and {L}oss-{A}daptive {W}eighting for {R}obust {D}eep {L}earning},
-  author={Rahman, Zaryab},
-  booktitle={--},
-  year={2025},
-  note={Code available at: https://github.com/ZaryabRahman/SLAW-Sharpness--and-Loss-Adaptive-Weighting-for-Robust-Deep-Learningg}
+@article{rahman2026slaw,
+  title={SLAW: Sharpness- and Loss-Adaptive Weighting for Robust Deep Learning},
+  author={Rahman, Zaryab and Din, Fakhrud and Khalid, Shah},
+  journal={International Journal of Data Science and Analytics},
+  volume={22},
+  pages={293},
+  year={2026},
+  publisher={Springer},
+  doi={10.1007/s41060-026-01272-w}
 }
 ```
